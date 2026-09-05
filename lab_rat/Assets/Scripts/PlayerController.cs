@@ -2,4 +2,5 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public bool canMove = true; }
+    public bool canMove = true;
+}

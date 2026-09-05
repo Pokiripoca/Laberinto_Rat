@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -9,50 +9,65 @@ public class CheeseInspector : MonoBehaviour
     public Button botonComer;
     public Button botonIgnorar;
 
-    [Header("Referencias de �rbita")]
-    public Transform puntoInspeccion; // Objeto CentroQueso
-    public Camera camaraInspeccion;   // Main Camera
+    [Header("Referencias de Órbita y Cámara")]
+    public Transform puntoInspeccion;
+    public Camera camaraInspeccion;
 
-    [Header("Configuraci�n de �rbita")]
+    [Header("Configuración de Órbita")]
     public float distanciaCamara = 3f;
     public float velocidadSensibilidad = 180f;
     public float limiteVerticalMin = -20f;
     public float limiteVerticalMax = 80f;
 
-    [Header("Referencias Jugador")]
-    public PlayerController jugador;
-
     private GameObject quesoInstanciado;
     private CheeseData quesoActualData;
+    private GameObject quesoEnMapa;
 
-    // Inicia en FALSE para que el jugador controle la c�mara normalmente hasta activar el queso
     public bool estaInspeccionando = false;
+
+    // Variables para guardar dónde estaba la cámara antes de inspeccionar
+    private Vector3 posicionCamaraOriginal;
+    private Quaternion rotacionCamaraOriginal;
 
     private float rotacionX = 0f;
     private float rotacionY = 20f;
 
     void Start()
     {
+        estaInspeccionando = false;
         if (panelInspeccion != null) panelInspeccion.SetActive(false);
 
-        if (botonComer != null) botonComer.onClick.AddListener(ComerQueso);
-        if (botonIgnorar != null) botonIgnorar.onClick.AddListener(IgnorarQueso);
+        if (botonComer != null)
+        {
+            botonComer.onClick.RemoveAllListeners();
+            botonComer.onClick.AddListener(ComerQueso);
+        }
+
+        if (botonIgnorar != null)
+        {
+            botonIgnorar.onClick.RemoveAllListeners();
+            botonIgnorar.onClick.AddListener(IgnorarQueso);
+        }
     }
 
     void Update()
     {
-        if (!estaInspeccionando) return;
-
-        // Arrastrar clic izquierdo para girar
-        if (Input.GetMouseButton(0))
+        if (Input.GetKeyDown(KeyCode.E) && !estaInspeccionando)
         {
-            rotacionX += Input.GetAxis("Mouse X") * velocidadSensibilidad * Time.deltaTime;
-            rotacionY -= Input.GetAxis("Mouse Y") * velocidadSensibilidad * Time.deltaTime;
-
-            rotacionY = Mathf.Clamp(rotacionY, limiteVerticalMin, limiteVerticalMax);
+            AbrirSiguienteQueso();
         }
 
-        ActualizarPosicionCamara();
+        if (estaInspeccionando)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                rotacionX += Input.GetAxis("Mouse X") * velocidadSensibilidad * Time.deltaTime;
+                rotacionY -= Input.GetAxis("Mouse Y") * velocidadSensibilidad * Time.deltaTime;
+                rotacionY = Mathf.Clamp(rotacionY, limiteVerticalMin, limiteVerticalMax);
+            }
+
+            ActualizarPosicionCamara();
+        }
     }
 
     private void ActualizarPosicionCamara()
@@ -66,19 +81,44 @@ public class CheeseInspector : MonoBehaviour
         camaraInspeccion.transform.position = posicionCalculada;
     }
 
+    public void AbrirSiguienteQueso()
+    {
+        CheeseData[] quesosEnEscena = FindObjectsByType<CheeseData>(FindObjectsSortMode.None);
+
+        if (quesosEnEscena.Length > 0)
+        {
+            AbrirInspeccion(quesosEnEscena[0]);
+        }
+    }
+
     public void AbrirInspeccion(CheeseData queso)
     {
+        if (queso == null) return;
+
+        // 1. Guardar la posición de la cámara del jugador antes de cambiar la vista
+        if (camaraInspeccion != null)
+        {
+            posicionCamaraOriginal = camaraInspeccion.transform.position;
+            rotacionCamaraOriginal = camaraInspeccion.transform.rotation;
+        }
+
         quesoActualData = queso;
+        quesoEnMapa = queso.gameObject;
         estaInspeccionando = true;
 
-        if (jugador != null) jugador.canMove = false;
         if (panelInspeccion != null) panelInspeccion.SetActive(true);
 
-        // Instanciar el modelo 3D en CentroQueso
-        if (queso != null && queso.modeloInspeccionPrefab != null && puntoInspeccion != null)
+        // 2. Montar el modelo en el centro de inspección
+        if (puntoInspeccion != null)
         {
             if (quesoInstanciado != null) Destroy(quesoInstanciado);
-            quesoInstanciado = Instantiate(queso.modeloInspeccionPrefab, puntoInspeccion.position, Quaternion.identity, puntoInspeccion);
+
+            quesoInstanciado = Instantiate(queso.gameObject, puntoInspeccion);
+            quesoInstanciado.transform.localPosition = Vector3.zero;
+            quesoInstanciado.transform.localRotation = Quaternion.identity;
+
+            CheeseData cd = quesoInstanciado.GetComponent<CheeseData>();
+            if (cd != null) Destroy(cd);
         }
 
         rotacionX = 0f;
@@ -90,28 +130,44 @@ public class CheeseInspector : MonoBehaviour
     {
         if (quesoActualData != null && quesoActualData.tieneMoho)
         {
-            Debug.Log("�El queso ten�a moho! Reiniciando la escena...");
+            // ❌ SI ES MALO: Reinicia la escena (o resta vida)
+            Debug.Log("❌ ¡Te comiste un queso PODRIDO! Reiniciando escena...");
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else
         {
-            Debug.Log("�Queso comestible fresco!");
-            if (quesoActualData != null) Destroy(quesoActualData.gameObject);
-            CerrarInspeccion();
+            // ✅ SI ES BUENO: Elimina el queso de la escena y te regresa al juego
+            Debug.Log("✅ ¡Queso BUENO comido! Eliminando queso del mapa...");
+
+            if (quesoEnMapa != null)
+            {
+                Destroy(quesoEnMapa);
+            }
+
+            CerrarInspeccionYContinuar();
         }
     }
 
     public void IgnorarQueso()
     {
-        CerrarInspeccion();
+        Debug.Log("Elegiste IGNORAR. El queso se queda en el mapa.");
+        CerrarInspeccionYContinuar();
     }
 
-    private void CerrarInspeccion()
+    private void CerrarInspeccionYContinuar()
     {
+        // 1. Destruir la copia 3D de inspección
         if (quesoInstanciado != null) Destroy(quesoInstanciado);
 
+        // 2. Ocultar la UI
         estaInspeccionando = false;
         if (panelInspeccion != null) panelInspeccion.SetActive(false);
-        if (jugador != null) jugador.canMove = true;
+
+        // 3. Regresar la cámara a la posición del jugador
+        if (camaraInspeccion != null)
+        {
+            camaraInspeccion.transform.position = posicionCamaraOriginal;
+            camaraInspeccion.transform.rotation = rotacionCamaraOriginal;
+        }
     }
 }

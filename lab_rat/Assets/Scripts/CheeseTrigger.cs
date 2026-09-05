@@ -1,8 +1,10 @@
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 public class CheeseTrigger : MonoBehaviour
 {
-    private bool jugadorCerca = false;
     private CheeseData datosQueso;
     private CheeseInspector sistemaInspeccion;
 
@@ -14,30 +16,28 @@ public class CheeseTrigger : MonoBehaviour
 
     void Update()
     {
-        if (jugadorCerca && Input.GetKeyDown(KeyCode.E))
+        bool presionoE = false;
+
+        // Comprobación compatible con el New Input System
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        {
+            presionoE = true;
+        }
+#endif
+
+        // Comprobación clásica por si acaso
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            presionoE = true;
+        }
+
+        if (presionoE)
         {
             if (sistemaInspeccion != null && datosQueso != null && !sistemaInspeccion.estaInspeccionando)
             {
                 sistemaInspeccion.AbrirInspeccion(datosQueso);
             }
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        // Detecta al jugador o a la Main Camera en la escena de prueba
-        if (other.CompareTag("Player") || other.GetComponent<Camera>() != null || other.name.Contains("Camera"))
-        {
-            jugadorCerca = true;
-            Debug.Log(" Presiona 'E' para inspeccionar el queso.");
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player") || other.GetComponent<Camera>() != null || other.name.Contains("Camera"))
-        {
-            jugadorCerca = false;
         }
     }
 }

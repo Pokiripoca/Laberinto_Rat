@@ -65,11 +65,13 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.5.10f1\Editor\Data\BCLExtensions\TargetingPacks\netstandard2.1\analyzers\dotnet\roslyn4.0\cs\System.Text.Json.SourceGeneration.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\CheeseSpawner.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\CheeseInspector.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\CheeseData.cs" />
     <Compile Include="Assets\Scripts\CheeseTrigger.cs" />
+    <Compile Include="Assets\Scripts\NewMonoBehaviourScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

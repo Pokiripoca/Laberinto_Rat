@@ -7,4 +7,5 @@ public class CheeseData : MonoBehaviour
     public bool tieneMoho = false;
 
     [Header("Modelo 3D para Inspeccionar")]
-    public GameObject modeloInspeccionPrefab; }
+    public GameObject modeloInspeccionPrefab;
+}
