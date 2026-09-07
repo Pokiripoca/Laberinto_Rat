@@ -427,32 +427,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1480375441 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2325733744858195201, guid: da52994d486394167bdd706715f323d9, type: 3}
-  m_PrefabInstance: {fileID: 2078593818}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1480375445 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1853057081889078895, guid: da52994d486394167bdd706715f323d9, type: 3}
   m_PrefabInstance: {fileID: 2078593818}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1480375446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+--- !u!143 &1480375449 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 1081608490608269501, guid: da52994d486394167bdd706715f323d9, type: 3}
+  m_PrefabInstance: {fileID: 2078593818}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1480375441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 212d1ba34155549eb8116b8e2da0d0ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FPSPlayer
-  speed: 5
-  mouseSensitivity: 1.4
-  gravity: -9.81
-  footstepClip: {fileID: 0}
 --- !u!1 &1522728708
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,6 +575,7 @@ GameObject:
   - component: {fileID: 1791121629}
   - component: {fileID: 1791121631}
   - component: {fileID: 1791121630}
+  - component: {fileID: 1791121632}
   m_Layer: 5
   m_Name: Orejas
   m_TagString: Untagged
@@ -614,7 +599,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -13}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1791121630
@@ -655,6 +640,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1791121628}
   m_CullTransparentMesh: 1
+--- !u!114 &1791121632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791121628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db694a167453d2446b6b6d99d45c501e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cabeza
+  veloCabeza: 12
+  tambaleo: 8
+  resetSpeed: 5
+  playerController: {fileID: 1480375449}
+  rtrans: {fileID: 0}
 --- !u!1001 &2078593818
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -663,6 +665,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 553304249558163056, guid: da52994d486394167bdd706715f323d9, type: 3}
+      propertyPath: mouseSensitivity
+      value: 1.4
+      objectReference: {fileID: 0}
     - target: {fileID: 1853057081889078895, guid: da52994d486394167bdd706715f323d9, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.35641
@@ -717,10 +723,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1853057081889078895, guid: da52994d486394167bdd706715f323d9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 459959993}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2325733744858195201, guid: da52994d486394167bdd706715f323d9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1480375446}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da52994d486394167bdd706715f323d9, type: 3}
 --- !u!1 &2118466852
 GameObject:

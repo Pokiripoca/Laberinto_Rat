@@ -6,15 +6,16 @@ public class FPSPlayer : MonoBehaviour
 {
     [Header("Movimiento")]
     public float speed = 5f;
+    public float gravity = -9.81f;
 
     [Header("Mouse")]
     public float mouseSensitivity = 2f;
-    private float yRotation = 0f;
-    private float yVelocity = 0f;
-    public float gravity = -9.81f;
 
     [Header("Audio")]
-    public AudioClip footstepClip; // <- Asignar en Inspector
+    public AudioClip footstepClip;
+
+    private float yRotation = 0f;
+    private float yVelocity = 0f;
 
     private AudioSource audioSource;
     private CharacterController controller;
@@ -46,24 +47,26 @@ public class FPSPlayer : MonoBehaviour
         HandleMouseLook();
         HandleMovement();
         HandleFootsteps();
-
-        float x = Input.GetAxis("Horizontal");
-    float z = Input.GetAxis("Vertical");
-
-    Vector3 move = transform.right * x + transform.forward * z;
-
-    yVelocity += gravity * Time.deltaTime;
-    move.y = yVelocity;
-
-    controller.Move(move * Time.deltaTime);
     }
 
     void HandleMovement()
     {
-        float x = Input.GetAxis("Horizontal"); // A/D
-        float z = Input.GetAxis("Vertical");   // W/S
+        // Reiniciar gravedad cuando pisa el suelo
+        if (controller.isGrounded && yVelocity < 0)
+        {
+            yVelocity = -2f; // Mantener un pequeño empuje hacia abajo para estabilizar isGrounded
+        }
+
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
+
+        // Aplicar gravedad
+        yVelocity += gravity * Time.deltaTime;
+        move.y = yVelocity;
+
+        // Mover solo una vez por frame
         controller.Move(move * speed * Time.deltaTime);
     }
 
@@ -81,7 +84,8 @@ public class FPSPlayer : MonoBehaviour
 
     void HandleFootsteps()
     {
-        bool isMoving = controller.velocity.magnitude > 0.1f && controller.isGrounded;
+        Vector3 horizontalVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
+        bool isMoving = horizontalVelocity.magnitude > 0.1f && controller.isGrounded;
 
         if (isMoving)
         {
