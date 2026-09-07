@@ -71,6 +71,7 @@
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\CheeseData.cs" />
     <Compile Include="Assets\Scripts\CheeseTrigger.cs" />
+    <Compile Include="Assets\Scripts\FPSPlayer.cs" />
     <Compile Include="Assets\Scripts\NewMonoBehaviourScript.cs" />
   </ItemGroup>
   <ItemGroup>
