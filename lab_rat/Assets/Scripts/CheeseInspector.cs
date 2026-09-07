@@ -25,17 +25,20 @@ public class CheeseInspector : MonoBehaviour
 
     public bool estaInspeccionando = false;
 
-    // Variables para guardar dónde estaba la cámara antes de inspeccionar
     private Vector3 posicionCamaraOriginal;
     private Quaternion rotacionCamaraOriginal;
 
     private float rotacionX = 0f;
     private float rotacionY = 20f;
 
+    private FPSPlayer playerScript;
+
     void Start()
     {
         estaInspeccionando = false;
         if (panelInspeccion != null) panelInspeccion.SetActive(false);
+
+        playerScript = FindFirstObjectByType<FPSPlayer>();
 
         if (botonComer != null)
         {
@@ -52,11 +55,6 @@ public class CheeseInspector : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && !estaInspeccionando)
-        {
-            AbrirSiguienteQueso();
-        }
-
         if (estaInspeccionando)
         {
             if (Input.GetMouseButton(0))
@@ -81,21 +79,18 @@ public class CheeseInspector : MonoBehaviour
         camaraInspeccion.transform.position = posicionCalculada;
     }
 
-    public void AbrirSiguienteQueso()
-    {
-        CheeseData[] quesosEnEscena = FindObjectsByType<CheeseData>(FindObjectsSortMode.None);
-
-        if (quesosEnEscena.Length > 0)
-        {
-            AbrirInspeccion(quesosEnEscena[0]);
-        }
-    }
-
     public void AbrirInspeccion(CheeseData queso)
     {
-        if (queso == null) return;
+        if (queso == null || estaInspeccionando) return;
 
-        // 1. Guardar la posición de la cámara del jugador antes de cambiar la vista
+        // 1. Pausar control del jugador y liberar cursor para la UI
+        if (playerScript == null) playerScript = FindFirstObjectByType<FPSPlayer>();
+        if (playerScript != null) playerScript.enabled = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // 2. Guardar posición previa de la cámara
         if (camaraInspeccion != null)
         {
             posicionCamaraOriginal = camaraInspeccion.transform.position;
@@ -108,17 +103,20 @@ public class CheeseInspector : MonoBehaviour
 
         if (panelInspeccion != null) panelInspeccion.SetActive(true);
 
-        // 2. Montar el modelo en el centro de inspección
+        // 3. Montar modelo 3D (Usa el prefab de inspección si existe, si no usa el objeto del mapa)
         if (puntoInspeccion != null)
         {
             if (quesoInstanciado != null) Destroy(quesoInstanciado);
 
-            quesoInstanciado = Instantiate(queso.gameObject, puntoInspeccion);
+            GameObject prefabAUsar = (queso.modeloInspeccionPrefab != null) ? queso.modeloInspeccionPrefab : queso.gameObject;
+            quesoInstanciado = Instantiate(prefabAUsar, puntoInspeccion);
             quesoInstanciado.transform.localPosition = Vector3.zero;
             quesoInstanciado.transform.localRotation = Quaternion.identity;
 
-            CheeseData cd = quesoInstanciado.GetComponent<CheeseData>();
-            if (cd != null) Destroy(cd);
+            // Limpiar componentes de física o lógica en el objeto clonado de inspección
+            foreach (var script in quesoInstanciado.GetComponents<MonoBehaviour>()) Destroy(script);
+            foreach (var col in quesoInstanciado.GetComponentsInChildren<Collider>()) Destroy(col);
+            foreach (var rb in quesoInstanciado.GetComponentsInChildren<Rigidbody>()) Destroy(rb);
         }
 
         rotacionX = 0f;
@@ -130,20 +128,13 @@ public class CheeseInspector : MonoBehaviour
     {
         if (quesoActualData != null && quesoActualData.tieneMoho)
         {
-            // ❌ SI ES MALO: Reinicia la escena (o resta vida)
             Debug.Log("❌ ¡Te comiste un queso PODRIDO! Reiniciando escena...");
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
         else
         {
-            // ✅ SI ES BUENO: Elimina el queso de la escena y te regresa al juego
             Debug.Log("✅ ¡Queso BUENO comido! Eliminando queso del mapa...");
-
-            if (quesoEnMapa != null)
-            {
-                Destroy(quesoEnMapa);
-            }
-
+            if (quesoEnMapa != null) Destroy(quesoEnMapa);
             CerrarInspeccionYContinuar();
         }
     }
@@ -156,18 +147,21 @@ public class CheeseInspector : MonoBehaviour
 
     private void CerrarInspeccionYContinuar()
     {
-        // 1. Destruir la copia 3D de inspección
         if (quesoInstanciado != null) Destroy(quesoInstanciado);
 
-        // 2. Ocultar la UI
         estaInspeccionando = false;
         if (panelInspeccion != null) panelInspeccion.SetActive(false);
 
-        // 3. Regresar la cámara a la posición del jugador
         if (camaraInspeccion != null)
         {
             camaraInspeccion.transform.position = posicionCamaraOriginal;
             camaraInspeccion.transform.rotation = rotacionCamaraOriginal;
         }
+
+        // Bloquear cursor nuevamente y reactivar al jugador
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        if (playerScript != null) playerScript.enabled = true;
     }
 }

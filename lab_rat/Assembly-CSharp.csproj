@@ -66,14 +66,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\CheeseSpawner.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\Cabeza.cs" />
     <Compile Include="Assets\Scripts\CheeseInspector.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\jugador\Cabeza.cs" />
+    <Compile Include="Assets\Scripts\jugador\FPSPlayer.cs" />
     <Compile Include="Assets\Scripts\CheeseData.cs" />
     <Compile Include="Assets\Scripts\CheeseTrigger.cs" />
-    <Compile Include="Assets\Scripts\FPSPlayer.cs" />
-    <Compile Include="Assets\Scripts\NewMonoBehaviourScript.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

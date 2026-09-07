@@ -24,7 +24,7 @@ public class Cabeza : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("Me muevo?" + IsPlayerMoving());
+        
         if (IsPlayerMoving())
         { //si mi jugador camina...
             //Como usaremos la funcion seno para q el jugador tambalee, usaremos un temporizador que

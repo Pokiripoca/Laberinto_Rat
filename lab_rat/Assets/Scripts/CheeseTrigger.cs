@@ -3,22 +3,41 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 #endif
 
+[RequireComponent(typeof(Collider))]
 public class CheeseTrigger : MonoBehaviour
 {
     private CheeseData datosQueso;
     private CheeseInspector sistemaInspeccion;
+    private bool jugadorCerca = false;
 
     void Start()
     {
         datosQueso = GetComponent<CheeseData>();
-        sistemaInspeccion = FindAnyObjectByType<CheeseInspector>();
+        sistemaInspeccion = FindFirstObjectByType<CheeseInspector>();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jugadorCerca = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jugadorCerca = false;
+        }
     }
 
     void Update()
     {
+        if (!jugadorCerca) return;
+
         bool presionoE = false;
 
-        // Comprobación compatible con el New Input System
 #if ENABLE_INPUT_SYSTEM
         if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
@@ -26,18 +45,14 @@ public class CheeseTrigger : MonoBehaviour
         }
 #endif
 
-        // Comprobación clásica por si acaso
         if (Input.GetKeyDown(KeyCode.E))
         {
             presionoE = true;
         }
 
-        if (presionoE)
+        if (presionoE && sistemaInspeccion != null && datosQueso != null && !sistemaInspeccion.estaInspeccionando)
         {
-            if (sistemaInspeccion != null && datosQueso != null && !sistemaInspeccion.estaInspeccionando)
-            {
-                sistemaInspeccion.AbrirInspeccion(datosQueso);
-            }
+            sistemaInspeccion.AbrirInspeccion(datosQueso);
         }
     }
 }
