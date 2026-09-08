@@ -1,86 +1,49 @@
 ﻿using UnityEngine;
 
-#if ENABLE_INPUT_SYSTEM
-
-using UnityEngine.InputSystem;
-
-#endif
-
-
-
+[RequireComponent(typeof(Collider))]
 public class CheeseTrigger : MonoBehaviour
-
 {
-
     private CheeseData datosQueso;
-
     private CheeseInspector sistemaInspeccion;
-
-
+    private bool jugadorCerca = false;
 
     void Start()
-
     {
-
         datosQueso = GetComponent<CheeseData>();
-
-        sistemaInspeccion = FindAnyObjectByType<CheeseInspector>();
-
+        sistemaInspeccion = FindFirstObjectByType<CheeseInspector>();
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jugadorCerca = true;
+            if (sistemaInspeccion != null && !sistemaInspeccion.estaInspeccionando)
+            {
+                sistemaInspeccion.MostrarPromptInteraccion(true);
+            }
+        }
+    }
 
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            jugadorCerca = false;
+            if (sistemaInspeccion != null)
+            {
+                sistemaInspeccion.MostrarPromptInteraccion(false);
+            }
+        }
+    }
 
     void Update()
-
     {
+        if (!jugadorCerca) return;
 
-        bool presionoE = false;
-
-
-
-        // Comprobaci�n compatible con el New Input System
-
-#if ENABLE_INPUT_SYSTEM
-
-        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
-
+        if (Input.GetKeyDown(KeyCode.E) && sistemaInspeccion != null && !sistemaInspeccion.estaInspeccionando)
         {
-
-            presionoE = true;
-
+            sistemaInspeccion.AbrirInspeccion(datosQueso);
         }
-
-#endif
-
-
-
-        // Comprobaci�n cl�sica por si acaso
-
-        if (Input.GetKeyDown(KeyCode.E))
-
-        {
-
-            presionoE = true;
-
-        }
-
-
-
-        if (presionoE)
-
-        {
-
-            if (sistemaInspeccion != null && datosQueso != null && !sistemaInspeccion.estaInspeccionando)
-
-            {
-
-                sistemaInspeccion.AbrirInspeccion(datosQueso);
-
-            }
-
-        }
-
     }
-
 }
-

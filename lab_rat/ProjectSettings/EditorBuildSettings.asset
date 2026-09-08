@@ -6,7 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/Queso.unity
+    guid: cf0f913c61e4dd44aa66c5e6f573f2e4
+  - enabled: 1
+    path: Assets/Scenes/petateada.unity
+    guid: 3a66f1b7e8147d14186efb1ea3df581a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
