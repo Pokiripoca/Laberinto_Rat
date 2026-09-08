@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\CheeseInspector.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\jugador\Cabeza.cs" />
+    <Compile Include="Assets\Scripts\muelto\PetateadaMenu.cs" />
     <Compile Include="Assets\Scripts\jugador\FPSPlayer.cs" />
     <Compile Include="Assets\Scripts\CheeseData.cs" />
     <Compile Include="Assets\Scripts\CheeseTrigger.cs" />
