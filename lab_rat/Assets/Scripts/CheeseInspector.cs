@@ -151,17 +151,26 @@ public class CheeseInspector : MonoBehaviour
         if (quesoActualData != null && quesoActualData.tieneMoho)
         {
             Debug.Log("❌ ¡Te comiste un queso PODRIDO!");
-            SceneManager.LoadScene(escenaDerrota);
+            SceneManager.LoadScene("MenuFailState");
         }
         else
         {
             Debug.Log("✅ ¡Queso BUENO comido!");
+
+            // 1. Destruir/Desactivar el queso del mapa PRIMERO para evitar doble conteo
+            if (quesoEnMapa != null)
+            {
+                GameObject quesoAEliminar = quesoEnMapa;
+                quesoEnMapa = null; // Limpiar referencia de inmediato
+                Destroy(quesoAEliminar);
+            }
+
+            // 2. Sumar al contador solo una vez
             if (QuesoContador.Instance != null)
             {
                 QuesoContador.Instance.RegistrarQuesoComido();
             }
 
-            if (quesoEnMapa != null) Destroy(quesoEnMapa);
             CerrarInspeccionYContinuar();
         }
     }

@@ -9,6 +9,7 @@ public class MetaLaberinto : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        // 1. Detectar si lo que entró en el Collider fue el Jugador
         if (other.CompareTag("Player"))
         {
             EvaluarFinal();
@@ -20,20 +21,22 @@ public class MetaLaberinto : MonoBehaviour
         int comidos = 0;
         int requeridos = 5;
 
+        // 2. Obtener los datos del QuesoContador
         if (QuesoContador.Instance != null)
         {
             comidos = QuesoContador.Instance.quesosBuenosComidos;
             requeridos = QuesoContador.Instance.totalQuesosBuenosRequeridos;
         }
 
+        // 3. Revisar si tiene los 5 quesos para decidir la escena
         if (comidos >= requeridos)
         {
-            Debug.Log("🏆 ¡5 Quesos comidos! Final Bueno.");
+            Debug.Log($"🏆 ¡Tiene {comidos} quesos! Cargando Final Bueno...");
             SceneManager.LoadScene(escenaFinalBueno);
         }
         else
         {
-            Debug.Log("💀 Menos de 5 quesos. Final Malo.");
+            Debug.Log($"💀 Solo tiene {comidos} de {requeridos} quesos. Cargando Final Malo...");
             SceneManager.LoadScene(escenaFinalMalo);
         }
     }
