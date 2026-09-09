@@ -1,100 +1,70 @@
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class CheeseSpawner : MonoBehaviour
 {
-    [Header("Prefabs de Quesos (Asignar en Inspector)")]
-    public GameObject prefabQuesoBueno;
-    public GameObject prefabQuesoMalo1;
-    public GameObject prefabQuesoMalo2;
+    [Header("Prefabs de Quesos")]
+    public GameObject prefabQuesoBueno;   // Prefab del queso amarillo (sin moho)
+    public GameObject prefabQuesoPodrido; // Prefab del queso podrido (con moho)
 
-    [Header("Puntos de Spawn en el Laberinto")]
-    public Transform[] puntosDeSpawn;
+    [Header("Puntos de Aparición (Spawners)")]
+    public Transform[] puntosDeAparicion; // Arrastra aquí todos los Transforms del mapa donde pueden aparecer quesos
 
-    [Header("Configuraci�n")]
-    public int cantidadAQuesosGenerar = 5;
+    [Header("Configuración de Garantía")]
+    public int cantidadQuesosBuenosGarantizados = 5;
 
     void Start()
     {
-        GenerarQuesosAleatorios();
+        GenerarQuesosEnMapa();
     }
 
-    public void GenerarQuesosAleatorios()
+    void GenerarQuesosEnMapa()
     {
-        if (puntosDeSpawn == null || puntosDeSpawn.Length == 0)
+        if (puntosDeAparicion == null || puntosDeAparicion.Length == 0)
         {
-            Debug.LogWarning("No hay puntos de spawn asignados.");
+            Debug.LogError("⚠️ No has asignado ningún punto de aparición en el CheeseSpawner.");
             return;
         }
 
-        // Buscar un prefab de respaldo por si alguno est� vac�o en el Inspector
-        GameObject prefabRespaldo = prefabQuesoBueno;
-        if (prefabRespaldo == null) prefabRespaldo = prefabQuesoMalo1;
-        if (prefabRespaldo == null) prefabRespaldo = prefabQuesoMalo2;
-
-        if (prefabRespaldo == null)
+        if (puntosDeAparicion.Length < cantidadQuesosBuenosGarantizados)
         {
-            Debug.LogError("�Debes asignar al menos UN prefab de queso o cubo en el Inspector del Spawner!");
-            return;
+            Debug.LogWarning($"⚠️ Hay menos puntos de aparición ({puntosDeAparicion.Length}) que quesos requeridos ({cantidadQuesosBuenosGarantizados}). Se reducirán los quesos buenos.");
+            cantidadQuesosBuenosGarantizados = puntosDeAparicion.Length;
         }
 
-        List<Transform> posicionesDisponibles = new List<Transform>(puntosDeSpawn);
-        int quesosAColocar = Mathf.Min(cantidadAQuesosGenerar, posicionesDisponibles.Count);
-
-        for (int i = 0; i < quesosAColocar; i++)
+        // 1. Crear una lista con los índices de los puntos de aparición
+        List<int> indicesPuntos = new List<int>();
+        for (int i = 0; i < puntosDeAparicion.Length; i++)
         {
-            int indicePosicion = Random.Range(0, posicionesDisponibles.Count);
-            Transform puntoElegido = posicionesDisponibles[indicePosicion];
-            posicionesDisponibles.RemoveAt(indicePosicion);
+            indicesPuntos.Add(i);
+        }
 
-            int tipoQuesoAleatorio = Random.Range(0, 3); // 0 = Bueno, 1 = Malo1, 2 = Malo2
-            GameObject prefabAEmitir = null;
-            bool esMalo = false;
+        // 2. Mezclar los índices de forma aleatoria (Algoritmo Fisher-Yates)
+        for (int i = 0; i < indicesPuntos.Count; i++)
+        {
+            int indiceAleatorio = Random.Range(i, indicesPuntos.Count);
+            int temp = indicesPuntos[i];
+            indicesPuntos[i] = indicesPuntos[indiceAleatorio];
+            indicesPuntos[indiceAleatorio] = temp;
+        }
 
-            switch (tipoQuesoAleatorio)
+        // 3. Colocar exactamente 5 quesos buenos en las primeras posiciones mezcladas
+        for (int i = 0; i < cantidadQuesosBuenosGarantizados; i++)
+        {
+            int indicePunto = indicesPuntos[i];
+            Instantiate(prefabQuesoBueno, puntosDeAparicion[indicePunto].position, puntosDeAparicion[indicePunto].rotation);
+        }
+
+        // 4. Llenar el resto de los puntos con quesos podridos
+        for (int i = cantidadQuesosBuenosGarantizados; i < indicesPuntos.Count; i++)
+        {
+            int indicePunto = indicesPuntos[i];
+            if (prefabQuesoPodrido != null)
             {
-                case 0:
-                    prefabAEmitir = (prefabQuesoBueno != null) ? prefabQuesoBueno : prefabRespaldo;
-                    esMalo = false;
-                    break;
-                case 1:
-                    prefabAEmitir = (prefabQuesoMalo1 != null) ? prefabQuesoMalo1 : prefabRespaldo;
-                    esMalo = true;
-                    break;
-                case 2:
-                    prefabAEmitir = (prefabQuesoMalo2 != null) ? prefabQuesoMalo2 : prefabRespaldo;
-                    esMalo = true;
-                    break;
-            }
-
-            // Instanciar el objeto
-            GameObject quesoCreado = Instantiate(prefabAEmitir, puntoElegido.position, puntoElegido.rotation);
-
-            // Asignar los datos
-            CheeseData datos = quesoCreado.GetComponent<CheeseData>();
-            if (datos == null)
-            {
-                datos = quesoCreado.AddComponent<CheeseData>();
-            }
-
-            datos.tieneMoho = esMalo;
-
-            // --- DISTINCI�N VISUAL TEMPORAL PARA PRUEBAS ---
-            // Cambiamos el color seg�n su estado para que puedas identificarlos
-            Renderer rend = quesoCreado.GetComponentInChildren<Renderer>();
-            if (rend != null)
-            {
-                if (esMalo)
-                {
-                    // Queso Malo/Podrido -> Color Oscuro / Verdoso
-                    rend.material.color = new Color(0.2f, 0.4f, 0.2f);
-                }
-                else
-                {
-                    // Queso Bueno -> Color Amarillo
-                    rend.material.color = new Color(1f, 0.85f, 0.2f);
-                }
+                Instantiate(prefabQuesoPodrido, puntosDeAparicion[indicePunto].position, puntosDeAparicion[indicePunto].rotation);
             }
         }
+
+        Debug.Log($"🧀 Se han generado {cantidadQuesosBuenosGarantizados} quesos buenos y {indicesPuntos.Count - cantidadQuesosBuenosGarantizados} quesos podridos aleatoriamente.");
     }
 }
