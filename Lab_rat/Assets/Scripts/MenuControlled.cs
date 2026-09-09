@@ -1,3 +1,5 @@
+using UnityEditor.Build;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +21,30 @@ public class MenuControlled : MonoBehaviour
         iBack2 = 2;
         iEnter2 = 3;
         index = 4;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            SiguienteEscena();
+        }
+    }
+
+    void SiguienteEscena()
+    {
+        int iEscenaActual = SceneManager.GetActiveScene().buildIndex;
+
+        int iSiguienteEscena = iEscenaActual + 1;
+
+        if (iSiguienteEscena < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(iSiguienteEscena);
+        }
+        else
+        {
+            Debug.LogWarning("Se ha llegado a la última escena");
+        }
     }
 
     public void Enter1()
