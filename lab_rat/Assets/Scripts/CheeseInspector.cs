@@ -152,7 +152,7 @@ public class CheeseInspector : MonoBehaviour
         if (quesoActualData != null && quesoActualData.tieneMoho)
         {
             Debug.Log("❌ ¡Te comiste un queso PODRIDO! Cargando escena 'petateada'...");
-            SceneManager.LoadScene("petateada");
+            SceneManager.LoadScene("MenuFailState");
         }
         else
         {
