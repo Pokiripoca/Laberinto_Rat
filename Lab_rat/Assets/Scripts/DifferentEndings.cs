@@ -10,9 +10,9 @@ public class DifferentEndings : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        index1 = 0;
-        index2 = 4;
-        index3 = 8;
+        index1 = 1;
+        index2 = 5;
+        index3 = 9;
     }
 
     public void ReturnMenu()

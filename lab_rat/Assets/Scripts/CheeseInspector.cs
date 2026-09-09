@@ -11,6 +11,7 @@ public class CheeseInspector : MonoBehaviour
     public GameObject imagenHUD;
     public Button botonComer;
     public Button botonIgnorar;
+    public string escenaDerrota = "petateada";
 
     [Header("Referencias de Órbita y Cámara")]
     public Transform puntoInspeccion;
@@ -23,7 +24,7 @@ public class CheeseInspector : MonoBehaviour
     public float limiteVerticalMax = 80f;
 
     [Header("Efectos de Sonido")]
-    public AudioClip sonidoOlfateo; // <- Asignar audio de olfateo en el Inspector
+    public AudioClip sonidoOlfateo;
 
     [HideInInspector]
     public bool estaInspeccionando = false;
@@ -121,13 +122,11 @@ public class CheeseInspector : MonoBehaviour
 
         if (panelInspeccion != null) panelInspeccion.SetActive(true);
 
-        // Reproducir sonido de olfateo al entrar a inspección
         if (sonidoOlfateo != null && audioSource != null)
         {
             audioSource.PlayOneShot(sonidoOlfateo);
         }
 
-        // Crear el queso 3D en CentroQueso
         if (puntoInspeccion != null)
         {
             if (quesoInstanciado != null) Destroy(quesoInstanciado);
@@ -151,12 +150,17 @@ public class CheeseInspector : MonoBehaviour
     {
         if (quesoActualData != null && quesoActualData.tieneMoho)
         {
-            Debug.Log("❌ ¡Te comiste un queso PODRIDO! Cargando escena 'petateada'...");
-            SceneManager.LoadScene("MenuFailState");
+            Debug.Log("❌ ¡Te comiste un queso PODRIDO!");
+            SceneManager.LoadScene(escenaDerrota);
         }
         else
         {
-            Debug.Log("✅ ¡Queso BUENO comido! Eliminando queso del mapa...");
+            Debug.Log("✅ ¡Queso BUENO comido!");
+            if (QuesoContador.Instance != null)
+            {
+                QuesoContador.Instance.RegistrarQuesoComido();
+            }
+
             if (quesoEnMapa != null) Destroy(quesoEnMapa);
             CerrarInspeccionYContinuar();
         }
@@ -164,7 +168,6 @@ public class CheeseInspector : MonoBehaviour
 
     public void IgnorarQueso()
     {
-        Debug.Log("Elegiste IGNORAR. El queso se queda en el mapa.");
         CerrarInspeccionYContinuar();
     }
 

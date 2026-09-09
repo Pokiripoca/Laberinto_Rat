@@ -15,12 +15,12 @@ public class MenuControlled : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        iBack1 = 0;
-        iCredits = 1;
-        iEnter1 = 2;
-        iBack2 = 2;
-        iEnter2 = 3;
-        index = 4;
+        iBack1 = 1;
+        iCredits = 2;
+        iEnter1 = 3;
+        iBack2 = 3;
+        iEnter2 = 4;
+        index = 5;
     }
 
     void Update()
