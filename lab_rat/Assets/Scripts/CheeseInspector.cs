@@ -2,10 +2,13 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(AudioSource))]
 public class CheeseInspector : MonoBehaviour
 {
-    [Header("Referencias de UI")]
+    [Header("UI y Mensajes")]
+    public GameObject textoPromptE;
     public GameObject panelInspeccion;
+    public GameObject imagenHUD;
     public Button botonComer;
     public Button botonIgnorar;
 
@@ -14,31 +17,37 @@ public class CheeseInspector : MonoBehaviour
     public Camera camaraInspeccion;
 
     [Header("Configuración de Órbita")]
-    public float distanciaCamara = 3f;
+    public float distanciaCamara = 2.5f;
     public float velocidadSensibilidad = 180f;
     public float limiteVerticalMin = -20f;
     public float limiteVerticalMax = 80f;
+
+    [Header("Efectos de Sonido")]
+    public AudioClip sonidoOlfateo; // <- Asignar audio de olfateo en el Inspector
+
+    [HideInInspector]
+    public bool estaInspeccionando = false;
 
     private GameObject quesoInstanciado;
     private CheeseData quesoActualData;
     private GameObject quesoEnMapa;
 
-    public bool estaInspeccionando = false;
-
-    private Vector3 posicionCamaraOriginal;
-    private Quaternion rotacionCamaraOriginal;
-
+    private Camera camaraJugador;
+    private AudioSource audioSource;
     private float rotacionX = 0f;
     private float rotacionY = 20f;
-
     private FPSPlayer playerScript;
 
     void Start()
     {
         estaInspeccionando = false;
         if (panelInspeccion != null) panelInspeccion.SetActive(false);
+        if (textoPromptE != null) textoPromptE.SetActive(false);
+
+        if (camaraInspeccion != null) camaraInspeccion.gameObject.SetActive(false);
 
         playerScript = FindFirstObjectByType<FPSPlayer>();
+        audioSource = GetComponent<AudioSource>();
 
         if (botonComer != null)
         {
@@ -57,7 +66,7 @@ public class CheeseInspector : MonoBehaviour
     {
         if (estaInspeccionando)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(1))
             {
                 rotacionX += Input.GetAxis("Mouse X") * velocidadSensibilidad * Time.deltaTime;
                 rotacionY -= Input.GetAxis("Mouse Y") * velocidadSensibilidad * Time.deltaTime;
@@ -65,6 +74,14 @@ public class CheeseInspector : MonoBehaviour
             }
 
             ActualizarPosicionCamara();
+        }
+    }
+
+    public void MostrarPromptInteraccion(bool mostrar)
+    {
+        if (textoPromptE != null)
+        {
+            textoPromptE.SetActive(mostrar);
         }
     }
 
@@ -83,19 +100,20 @@ public class CheeseInspector : MonoBehaviour
     {
         if (queso == null || estaInspeccionando) return;
 
-        // 1. Pausar control del jugador y liberar cursor para la UI
+        MostrarPromptInteraccion(false);
+
+        if (imagenHUD != null) imagenHUD.SetActive(false);
+
         if (playerScript == null) playerScript = FindFirstObjectByType<FPSPlayer>();
         if (playerScript != null) playerScript.enabled = false;
 
+        camaraJugador = Camera.main;
+        if (camaraJugador != null) camaraJugador.gameObject.SetActive(false);
+
+        if (camaraInspeccion != null) camaraInspeccion.gameObject.SetActive(true);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        // 2. Guardar posición previa de la cámara
-        if (camaraInspeccion != null)
-        {
-            posicionCamaraOriginal = camaraInspeccion.transform.position;
-            rotacionCamaraOriginal = camaraInspeccion.transform.rotation;
-        }
 
         quesoActualData = queso;
         quesoEnMapa = queso.gameObject;
@@ -103,7 +121,13 @@ public class CheeseInspector : MonoBehaviour
 
         if (panelInspeccion != null) panelInspeccion.SetActive(true);
 
-        // 3. Montar modelo 3D (Usa el prefab de inspección si existe, si no usa el objeto del mapa)
+        // Reproducir sonido de olfateo al entrar a inspección
+        if (sonidoOlfateo != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(sonidoOlfateo);
+        }
+
+        // Crear el queso 3D en CentroQueso
         if (puntoInspeccion != null)
         {
             if (quesoInstanciado != null) Destroy(quesoInstanciado);
@@ -113,7 +137,6 @@ public class CheeseInspector : MonoBehaviour
             quesoInstanciado.transform.localPosition = Vector3.zero;
             quesoInstanciado.transform.localRotation = Quaternion.identity;
 
-            // Limpiar componentes de física o lógica en el objeto clonado de inspección
             foreach (var script in quesoInstanciado.GetComponents<MonoBehaviour>()) Destroy(script);
             foreach (var col in quesoInstanciado.GetComponentsInChildren<Collider>()) Destroy(col);
             foreach (var rb in quesoInstanciado.GetComponentsInChildren<Rigidbody>()) Destroy(rb);
@@ -128,8 +151,8 @@ public class CheeseInspector : MonoBehaviour
     {
         if (quesoActualData != null && quesoActualData.tieneMoho)
         {
-            Debug.Log("❌ ¡Te comiste un queso PODRIDO! Reiniciando escena...");
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Debug.Log("❌ ¡Te comiste un queso PODRIDO! Cargando escena 'petateada'...");
+            SceneManager.LoadScene("petateada");
         }
         else
         {
@@ -152,13 +175,11 @@ public class CheeseInspector : MonoBehaviour
         estaInspeccionando = false;
         if (panelInspeccion != null) panelInspeccion.SetActive(false);
 
-        if (camaraInspeccion != null)
-        {
-            camaraInspeccion.transform.position = posicionCamaraOriginal;
-            camaraInspeccion.transform.rotation = rotacionCamaraOriginal;
-        }
+        if (imagenHUD != null) imagenHUD.SetActive(true);
 
-        // Bloquear cursor nuevamente y reactivar al jugador
+        if (camaraInspeccion != null) camaraInspeccion.gameObject.SetActive(false);
+        if (camaraJugador != null) camaraJugador.gameObject.SetActive(true);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
