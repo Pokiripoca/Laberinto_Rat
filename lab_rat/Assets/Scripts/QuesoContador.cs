@@ -6,11 +6,12 @@ public class QuesoContador : MonoBehaviour
     public static QuesoContador Instance { get; private set; }
 
     [Header("Progreso de Quesos")]
-    public int quesosBuenosComidos = 0;
+    public int quesosBuenosInspeccionados = 0;
+    public int quesosMalosInspeccionados = 0;
     public int totalQuesosBuenosRequeridos = 5;
 
     [Header("UI del Contador")]
-    public TextMeshProUGUI textoContadorUI; // Asigna el texto hijo aquí
+    public TextMeshProUGUI textoContadorUI; 
 
     private void Awake()
     {
@@ -29,10 +30,19 @@ public class QuesoContador : MonoBehaviour
         ActualizarTextoUI();
     }
 
-    public void RegistrarQuesoComido()
+    public void RegistrarQueso(bool esBueno)
     {
-        quesosBuenosComidos++;
-        Debug.Log($"🧀 Queso bueno comido. Total: {quesosBuenosComidos} / {totalQuesosBuenosRequeridos}");
+        if (esBueno)
+        {
+            quesosBuenosInspeccionados++;
+            Debug.Log($"🧀 Queso BUENO inspeccionado. Total: {quesosBuenosInspeccionados} / {totalQuesosBuenosRequeridos}");
+        }
+        else
+        {
+            quesosMalosInspeccionados++;
+            Debug.Log($"☣️ Queso MALO inspeccionado. Total malos: {quesosMalosInspeccionados}");
+        }
+
         ActualizarTextoUI();
     }
 
@@ -40,7 +50,7 @@ public class QuesoContador : MonoBehaviour
     {
         if (textoContadorUI != null)
         {
-            textoContadorUI.text = $"{quesosBuenosComidos} / {totalQuesosBuenosRequeridos}";
+            textoContadorUI.text = $"{quesosBuenosInspeccionados} / {totalQuesosBuenosRequeridos}";
         }
     }
 }
