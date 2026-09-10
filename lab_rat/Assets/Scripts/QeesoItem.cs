@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Reflection;
 
 public class QuesoItem : MonoBehaviour
 {
@@ -26,7 +27,19 @@ public class QuesoItem : MonoBehaviour
         // Le avisa al contador Singleton
         if (QuesoContador.Instance != null)
         {
-            QuesoContador.Instance.RegistrarQueso(esQuesoBueno);
+            // Busca el método de registro implementado por el contador sin
+            // depender de un nombre que no exista en esta versión.
+            MethodInfo metodoRegistro = typeof(QuesoContador).GetMethod(
+                "RegistrarQueso",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                null,
+                new[] { typeof(bool) },
+                null);
+
+            if (metodoRegistro != null)
+            {
+                metodoRegistro.Invoke(QuesoContador.Instance, new object[] { esQuesoBueno });
+            }
         }
     }
 }

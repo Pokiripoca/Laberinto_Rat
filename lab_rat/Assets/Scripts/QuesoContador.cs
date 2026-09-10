@@ -6,8 +6,7 @@ public class QuesoContador : MonoBehaviour
     public static QuesoContador Instance { get; private set; }
 
     [Header("Progreso de Quesos")]
-    public int quesosBuenosInspeccionados = 0;
-    public int quesosMalosInspeccionados = 0;
+    public int quesosBuenosComidos = 0;
     public int totalQuesosBuenosRequeridos = 5;
 
     [Header("UI del Contador")]
@@ -30,27 +29,19 @@ public class QuesoContador : MonoBehaviour
         ActualizarTextoUI();
     }
 
-    public void RegistrarQueso(bool esBueno)
+    // Esta es la función que están buscando tus otros scripts
+    public void RegistrarQuesoComido()
     {
-        if (esBueno)
-        {
-            quesosBuenosInspeccionados++;
-            Debug.Log($"🧀 Queso BUENO inspeccionado. Total: {quesosBuenosInspeccionados} / {totalQuesosBuenosRequeridos}");
-        }
-        else
-        {
-            quesosMalosInspeccionados++;
-            Debug.Log($"☣️ Queso MALO inspeccionado. Total malos: {quesosMalosInspeccionados}");
-        }
-
+        quesosBuenosComidos++;
+        Debug.Log($"🧀 Queso comido. Total: {quesosBuenosComidos} / {totalQuesosBuenosRequeridos}");
         ActualizarTextoUI();
     }
 
-    private void ActualizarTextoUI()
+    public void ActualizarTextoUI()
     {
         if (textoContadorUI != null)
         {
-            textoContadorUI.text = $"{quesosBuenosInspeccionados} / {totalQuesosBuenosRequeridos}";
+            textoContadorUI.text = $"{quesosBuenosComidos} / {totalQuesosBuenosRequeridos}";
         }
     }
 }
