@@ -394,6 +394,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControladorVideoMenu
   videoPlayer: {fileID: 0}
+  videoVictoria: {fileID: 0}
+  videoDerrota: {fileID: 0}
   nombreMenuVictoria: MenuVictoria
   nombreMenuDerrota: MenuDerrota
 --- !u!4 &1548174503
@@ -599,8 +601,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControladorVideoMenu
   videoPlayer: {fileID: 1909380401}
-  nombreMenuVictoria: MenuVictoria
-  nombreMenuDerrota: MenuDerrota
+  videoVictoria: {fileID: 32900000, guid: 2a76eb123fb0d284788638d8d6297a67, type: 3}
+  videoDerrota: {fileID: 32900000, guid: f3bf60eba9d74a342b3c3e05018ceaa4, type: 3}
+  nombreMenuVictoria: MenuWinState
+  nombreMenuDerrota: MenuFinalCientifico
 --- !u!1 &1926725382
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,27 +2,32 @@ using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 
-public class ControladorVideoMenu : MonoBehaviour
+public class ControladorCinematica : MonoBehaviour
 {
-    [Header("Componentes")]
     [SerializeField] private VideoPlayer videoPlayer;
+    [SerializeField] private VideoClip videoVictoria;
+    [SerializeField] private VideoClip videoDerrota;
 
-    [Header("Nombres exactos de tus escenas de menú")]
     [SerializeField] private string nombreMenuVictoria = "MenuVictoria";
     [SerializeField] private string nombreMenuDerrota = "MenuDerrota";
 
     void Start()
     {
-        // Se suscribe al evento automático de Unity que avisa cuando el video llega al final
-        if (videoPlayer != null)
+        if (EstadoJuego.JugadorGano)
         {
-            videoPlayer.loopPointReached += IrAlMenu;
+            videoPlayer.clip = videoVictoria;
         }
+        else
+        {
+            videoPlayer.clip = videoDerrota;
+        }
+
+        videoPlayer.loopPointReached += IrAlMenu;
+        videoPlayer.Play();
     }
 
     void Update()
     {
-        // Si el jugador presiona Enter durante el video, salta directamente al menú
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             IrAlMenu(videoPlayer);
@@ -31,13 +36,8 @@ public class ControladorVideoMenu : MonoBehaviour
 
     private void IrAlMenu(VideoPlayer vp)
     {
-        // Desuscribirse para evitar llamadas dobles
-        if (videoPlayer != null)
-        {
-            videoPlayer.loopPointReached -= IrAlMenu;
-        }
+        videoPlayer.loopPointReached -= IrAlMenu;
 
-        // Evalúa la variable guardada previamente y carga el menú correspondiente
         if (EstadoJuego.JugadorGano)
         {
             SceneManager.LoadScene(nombreMenuVictoria);

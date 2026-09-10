@@ -30,6 +30,12 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuFailState.unity
     guid: 396cf79b1ba6dc24b9b27438c62ceba1
   - enabled: 1
+    path: Assets/Scenes/Escenas.unity
+    guid: c5cc9e88561103a409a939b2989a1f56
+  - enabled: 1
+    path: Assets/Scenes/MenuWinState.unity
+    guid: ee4b04d9dd6f59440911d6649ced1977
+  - enabled: 1
     path: Assets/Scenes/MenuFinalCientifico.unity
     guid: 7ab9b1a3aa15f7042a5ff10d7c5f1b1d
   m_configObjects:
