@@ -69,10 +69,11 @@
     <Compile Include="Assets\Scripts\CheeseSpawner.cs" />
     <Compile Include="Assets\Scripts\SceneManager.cs" />
     <Compile Include="Assets\Scripts\QuesoContador.cs" />
-    <Compile Include="Assets\Scripts\ControladorVideoMenu.cs" />
     <Compile Include="Assets\Scripts\DifferentEndings.cs" />
     <Compile Include="Assets\Scripts\PauseMenu.cs" />
+    <Compile Include="Assets\Scripts\ControladorCinematica.cs" />
     <Compile Include="Assets\Scripts\CheeseInspector.cs" />
+    <Compile Include="Assets\Scripts\ControladorFinal.cs" />
     <Compile Include="Assets\Scripts\juju.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\jugador\Cabeza.cs" />
