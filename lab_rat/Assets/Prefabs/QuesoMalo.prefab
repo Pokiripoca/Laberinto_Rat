@@ -154,4 +154,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6543cabd466e24c9db291009df11f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuesoItem
-  esQuesoBueno: 1
+  esQuesoBueno: 0

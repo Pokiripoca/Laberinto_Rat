@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\jugador\FPSPlayer.cs" />
     <Compile Include="Assets\Scripts\CheeseData.cs" />
     <Compile Include="Assets\Scripts\CheeseTrigger.cs" />
+    <Compile Include="Assets\Scripts\QuesoFinalTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
