@@ -1124,8 +1124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 198d42534b86137438cfd7c03bdc5ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MetaLaberinto
-  escenaFinalBueno: FinalBueno
-  escenaFinalMalo: FinalMalo
+  escenaFinalBueno: MenuWinState
+  escenaFinalMalo: MenuFinalCientifico
 --- !u!1 &1880114438 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3684278220782892330, guid: c40b1cc149a3bce488265ba2077ca7f6, type: 3}
