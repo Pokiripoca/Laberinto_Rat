@@ -146,33 +146,23 @@ public class CheeseInspector : MonoBehaviour
         ActualizarPosicionCamara();
     }
 
-    public void ComerQueso()
-    {
-        if (quesoActualData != null && quesoActualData.tieneMoho)
-        {
-            Debug.Log("❌ ¡Te comiste un queso PODRIDO!");
-            SceneManager.LoadScene("MenuFailState");
+    public void ComerQueso() {
+        // 1. Eliminar la referencia del mapa para evitar doble lectura
+        if (quesoEnMapa != null) {
+            GameObject quesoAEliminar = quesoEnMapa;
+            quesoEnMapa = null;
+            Destroy(quesoAEliminar);
         }
-        else
-        {
-            Debug.Log("✅ ¡Queso BUENO comido!");
 
-            // 1. Destruir/Desactivar el queso del mapa PRIMERO para evitar doble conteo
-            if (quesoEnMapa != null)
-            {
-                GameObject quesoAEliminar = quesoEnMapa;
-                quesoEnMapa = null; // Limpiar referencia de inmediato
-                Destroy(quesoAEliminar);
-            }
-
-            // 2. Sumar al contador solo una vez
-            if (QuesoContador.Instance != null)
-            {
-                QuesoContador.Instance.RegistrarQuesoComido();
-            }
-
-            CerrarInspeccionYContinuar();
+        // 2. Registrar TODOS los quesos comidos en el contador (buenos y podridos)
+        if (QuesoContador.Instance != null) {
+            QuesoContador.Instance.RegistrarQuesoComido();
+        } else {
+            Debug.LogError("⚠️ No se encontró la instancia de QuesoContador.");
         }
+
+        // 3. Cerrar la vista de inspección y regresar al juego
+        CerrarInspeccionYContinuar();
     }
 
     public void IgnorarQueso()
