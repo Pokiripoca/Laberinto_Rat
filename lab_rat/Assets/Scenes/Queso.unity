@@ -2227,13 +2227,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8179851118263330273, guid: 1f5c778c3ea1bbe46b4d2b421ef31681, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3608235888427953931, guid: 1f5c778c3ea1bbe46b4d2b421ef31681, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1868803379}
+    - targetCorrespondingSourceObject: {fileID: 3608235888427953931, guid: 1f5c778c3ea1bbe46b4d2b421ef31681, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1868803381}
+    - targetCorrespondingSourceObject: {fileID: 3608235888427953931, guid: 1f5c778c3ea1bbe46b4d2b421ef31681, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1868803380}
   m_SourcePrefab: {fileID: 100100000, guid: 1f5c778c3ea1bbe46b4d2b421ef31681, type: 3}
 --- !u!1 &1868803378 stripped
 GameObject:
@@ -2254,6 +2261,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MetaLaberinto
   escenaFinalBueno: MenuWinState
   escenaFinalMalo: MenuFinalCientifico
+--- !u!114 &1868803380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1868803378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c185402d26577f345bcc6afc2684ca9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::QuesoFinalTrigger
+--- !u!65 &1868803381
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1868803378}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.047275435, y: 0.03244002, z: 0.036869936}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1880114438 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3684278220782892330, guid: c40b1cc149a3bce488265ba2077ca7f6, type: 3}
